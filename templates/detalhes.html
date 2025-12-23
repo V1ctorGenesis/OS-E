@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detalhes - Solicitação #{{ solicitacao['id'] }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <header>
+    <h1>📋 Sistema de Manutenção</h1>
+    <p>Registre sua solicitação</p>
+    <a href="{{ url_for('logout') }}" class="btn-logout">🚪 Sair</a>
+  </header>
+
+  <main>
+    <section class="formulario-secao">
+      <a href="{{ url_for('listar') }}" 
+         style="display: inline-block; margin-bottom: 20px; background-color: #3b82f6; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; font-weight: 600;">
+        ← Voltar
+      </a>
+      
+      <fieldset>
+        <legend>Informações do Cliente</legend>
+        <p><strong>Cliente:</strong> {{ solicitacao['cliente'] }}</p>
+        <p><strong>Contato:</strong> {{ solicitacao['contato'] or '-' }}</p>
+        <p><strong>Setor:</strong> {{ solicitacao['setor'] or '-' }}</p>
+      </fieldset>
+
+      <fieldset>
+        <legend>Detalhes da Manutenção</legend>
+        <p><strong>Equipamento:</strong> {{ solicitacao['equipamento'] }}</p>
+        <p><strong>Tipo:</strong> {{ solicitacao['tipo'] }}</p>
+        <p><strong>Descrição:</strong> {{ solicitacao['descricao'] }}</p>
+        <p><strong>Prioridade:</strong> {{ solicitacao['prioridade'] }}</p>
+      </fieldset>
+
+      <fieldset>
+        <legend>Responsável</legend>
+        <p><strong>Técnico:</strong> {{ solicitacao['tecnico'] or '-' }}</p>
+        <p><strong>Data da Solicitação:</strong> {{ solicitacao['data_solicitacao'] or '-' }}</p>
+      </fieldset>
+
+      <fieldset>
+        <legend>Peças e Material</legend>
+        <p>{{ solicitacao['pecas'] or 'Nenhuma peça registrada' }}</p>
+      </fieldset>
+
+      <fieldset>
+        <legend>Informações do Sistema</legend>
+        <p><strong>Registrado em:</strong> {{ solicitacao['data_registro'] }}</p>
+        <p><strong>Status:</strong> {{ solicitacao['status'] }}</p>
+      </fieldset>
+
+      <fieldset>
+        <legend>Alterar Status</legend>
+        <form method="post" action="{{ url_for('alterar_status', id=solicitacao['id']) }}">
+          <label for="status">Novo Status:</label>
+          <select id="status" name="status">
+            <option value="Pendente" {% if solicitacao['status'] == 'Pendente' %}selected{% endif %}>Pendente</option>
+            <option value="Em andamento" {% if solicitacao['status'] == 'Em andamento' %}selected{% endif %}>Em andamento</option>
+            <option value="Concluída" {% if solicitacao['status'] == 'Concluída' %}selected{% endif %}>Concluída</option>
+          </select>
+          <br><br>
+          <button type="submit">Alterar Status</button>
+        </form>
+      </fieldset>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 - Sistema de Manutenção</p>
+  </footer>
+</body>
+</html>

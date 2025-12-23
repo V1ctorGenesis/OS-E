@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema de Manutenção</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    .menu-topo {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .btn-ver-salvos {
+      display: inline-block;
+      background-color: #10b981;
+      color: white;
+      padding: 12px 30px;
+      text-decoration: none;
+      border-radius: 5px;
+      font-weight: bold;
+      font-size: 1em;
+      transition: all 0.3s;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .btn-ver-salvos:hover {
+      background-color: #059669;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+    .mensagens {
+      max-width: 900px;
+      margin: 0 auto 20px auto;
+      padding: 0 20px;
+    }
+    .alert {
+      padding: 15px;
+      border-radius: 5px;
+      margin-bottom: 15px;
+    }
+    .alert-success {
+      background-color: #d1fae5;
+      color: #065f46;
+      border: 1px solid #10b981;
+    }
+    .alert-error {
+      background-color: #fee2e2;
+      color: #991b1b;
+      border: 1px solid #ef4444;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>📋 Sistema de Manutenção</h1>
+    <p>Registre sua solicitação</p>
+    <a href="{{ url_for('logout') }}" class="btn-logout">🚪 Sair</a>
+  </header>
+
+  <main>
+    <!-- Mensagens Flash -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="mensagens">
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+{% endwith %}
+
+    <section class="formulario-secao">
+      <!-- Botão para ver formulários salvos -->
+      <div class="menu-topo">
+        <a href="{{ url_for('listar') }}" class="btn-ver-salvos">
+          📋 Ver Formulários Salvos
+        </a>
+      </div>
+
+      <h2>Nova Solicitação de Manutenção</h2>
+      
+      <form id="formManutencao" action="/enviar" method="post">
+        
+        <fieldset>
+          <legend>Informações do Cliente</legend>
+          
+          <label for="cliente">Nome do Cliente: *</label>
+          <input type="text" id="cliente" name="cliente" required>
+          
+          <label for="contato">Telefone/Email:</label>
+          <input type="text" id="contato" name="contato">
+          
+          <label for="setor">Setor/Departamento:</label>
+          <input type="text" id="setor" name="setor">
+        </fieldset>
+
+        <fieldset>
+          <legend>Detalhes da Manutenção</legend>
+          
+          <label for="equipamento">Equipamento: *</label>
+          <input type="text" id="equipamento" name="equipamento" required>
+          
+          <label for="tipo">Tipo de Manutenção: *</label>
+          <select id="tipo" name="tipo" required>
+            <option value="">-- Selecione --</option>
+            <option value="Preventiva">Preventiva</option>
+            <option value="Corretiva">Corretiva</option>
+            <option value="Instalação">Instalação</option>
+            <option value="Revisão">Revisão</option>
+          </select>
+          
+          <label for="descricao">Descrição do Problema: *</label>
+          <textarea id="descricao" name="descricao" rows="4" required></textarea>
+          
+          <label for="prioridade">Prioridade:</label>
+          <select id="prioridade" name="prioridade">
+            <option value="baixa">Baixa</option>
+            <option value="media" selected>Média</option>
+            <option value="alta">Alta</option>
+            <option value="urgente">Urgente</option>
+          </select>
+        </fieldset>
+
+        <fieldset>
+          <legend>Responsável</legend>
+          
+          <label for="tecnico">Técnico Responsável:</label>
+          <input type="text" id="tecnico" name="tecnico">
+          
+          <label for="data">Data da Solicitação:</label>
+          <input type="date" id="data" name="data">
+        </fieldset>
+
+        <fieldset>
+          <legend>Peças e Material</legend>
+          
+          <label for="pecas">Peças Substituídas/Utilizadas:</label>
+          <textarea id="pecas" name="pecas" rows="3" placeholder="Ex: Rolamento 6204, Correia A-45..."></textarea>
+        </fieldset>
+
+        <div class="botoes">
+          <button type="submit">Enviar Solicitação</button>
+          <button type="reset">Limpar Formulário</button>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 - Sistema de Manutenção</p>
+  </footer>
+</body>
+</html>
