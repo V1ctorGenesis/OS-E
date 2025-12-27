@@ -10,13 +10,13 @@
   <header>
     <h1>📋 Sistema de Manutenção</h1>
     <p>Registre sua solicitação</p>
+    <a href="{{ url_for('dashboard') }}" class="btn-dashboard">📊 Dashboard</a>
     <a href="{{ url_for('logout') }}" class="btn-logout">🚪 Sair</a>
   </header>
 
   <main>
     <section class="formulario-secao">
-      <a href="{{ url_for('listar') }}" 
-         style="display: inline-block; margin-bottom: 20px; background-color: #3b82f6; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; font-weight: 600;">
+      <a href="{{ url_for('listar') }}" class="btn-voltar">
         ← Voltar
       </a>
       
@@ -38,7 +38,7 @@
       <fieldset>
         <legend>Responsável</legend>
         <p><strong>Técnico:</strong> {{ solicitacao['tecnico'] or '-' }}</p>
-        <p><strong>Data da Solicitação:</strong> {{ solicitacao['data_solicitacao'] or '-' }}</p>
+        <p><strong>Data da Solicitação:</strong> {{ solicitacao['data_solicitacao'] | data_br if solicitacao['data_solicitacao'] else '-' }}</p>
       </fieldset>
 
       <fieldset>
@@ -48,7 +48,7 @@
 
       <fieldset>
         <legend>Informações do Sistema</legend>
-        <p><strong>Registrado em:</strong> {{ solicitacao['data_registro'] }}</p>
+        <p><strong>Última atualização:</strong> {{ solicitacao['data_registro'][:10] | data_br }}</p>
         <p><strong>Status:</strong> {{ solicitacao['status'] }}</p>
       </fieldset>
 

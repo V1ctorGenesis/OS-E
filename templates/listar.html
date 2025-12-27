@@ -15,76 +15,15 @@
     }
   }
   </script>
-  <style>
-    .busca-form {
-      margin-bottom: 20px;
-    }
-    .busca-form input {
-      width: 70%;
-      display: inline-block;
-    }
-    .busca-form button {
-      width: 28%;
-      display: inline-block;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-    }
-    table th, table td {
-      padding: 12px;
-      text-align: left;
-      border-bottom: 1px solid #ddd;
-    }
-    table th {
-      background-color: #3b82f6;
-      color: white;
-    }
-    table tr:hover {
-      background-color: #f5f5f5;
-    }
-    .badge {
-      padding: 4px 8px;
-      border-radius: 4px;
-      font-size: 0.85em;
-      font-weight: bold;
-    }
-    .badge-pendente { background-color: #f59e0b; color: white; }
-    .badge-em-andamento { background-color: #3b82f6; color: white; }
-    .badge-concluida { background-color: #10b981; color: white; }
-    .menu-nav {
-      margin-bottom: 20px;
-    }
-    .menu-nav a {
-      background-color: #6b7280;
-      color: white;
-      padding: 10px 20px;
-      text-decoration: none;
-      border-radius: 5px;
-      margin-right: 10px;
-    }
-    .menu-nav a:hover {
-      background-color: #4b5563;
-    }
-    .acoes-icons {
-      display: inline-flex;
-      gap: 8px;
-      white-space: nowrap;
-    }
-    .acoes-icons .btn {
-      padding: 6px 10px;
-      font-size: 0.85em;
-      border-radius: 4px;
-    }
-  </style>
 </head>
 <body>
   <header>
     <h1>📋 Sistema de Manutenção</h1>
     <p>Registre sua solicitação</p>
+    <a href="{{ url_for('dashboard') }}" class="btn-dashboard">📊 Dashboard</a>
     <a href="{{ url_for('logout') }}" class="btn-logout">🚪 Sair</a>
   </header>
+  
   <main>
     <section class="formulario-secao">
       <div class="menu-nav">
@@ -124,11 +63,11 @@
                 <td>{{ sol['cliente'] }}</td>
                 <td>{{ sol['equipamento'] }}</td>
                 <td>
-                  {% if sol['tipo'] == 'instalacao' %}Instalação
-                  {% elif sol['tipo'] == 'preventiva' %}Preventiva
-                  {% elif sol['tipo'] == 'corretiva' %}Corretiva
-                  {% elif sol['tipo'] == 'revisao' %}Revisão
-                  {% else %}{{ sol['tipo'] }}{% endif %}
+                  {% if sol['tipo'] == 'instalacao' or sol['tipo'] == 'Instalação' %}Instalação
+                  {% elif sol['tipo'] == 'preventiva' or sol['tipo'] == 'Preventiva' %}Preventiva
+                  {% elif sol['tipo'] == 'corretiva' or sol['tipo'] == 'Corretiva' %}Corretiva
+                  {% elif sol['tipo'] == 'montagem' or sol['tipo'] == 'Montagem' %}Montagem
+                  {% else %}{{ sol['tipo']|title }}{% endif %}
                 </td>
                 <td>
                   <span class="badge badge-{{ sol['status']|replace(' ', '-')|lower|replace('í','i')|replace('ã','a')|replace('ç','c') }}">
@@ -136,7 +75,7 @@
                   </span>
                 </td>
                 <td>{{ sol['tecnico'] or '-' }}</td>
-                <td>{{ sol['data_registro'][:16] }}</td>
+                <td>{{ sol['data_solicitacao'] | data_br if sol['data_solicitacao'] else '-' }}</td>
                 <td>
                   <div class="acoes-icons">
                     <a href="/editar/{{ sol['id'] }}" class="btn btn-sm btn-warning" title="Editar">
@@ -158,35 +97,36 @@
         
         <!-- MOBILE: Cards -->
         <div class="mobile-only">
-          <p style="margin-bottom: 20px;"><strong>Total de registros:</strong> {{ solicitacoes|length }}</p>
+          <p class="total-registros"><strong>Total de registros:</strong> {{ solicitacoes|length }}</p>
           
           {% for sol in solicitacoes %}
           <div class="card-mobile">
             <h6>#{{ sol['id'] }} - {{ sol['cliente'] }}</h6>
             <p><strong>Equipamento:</strong> {{ sol['equipamento'] }}</p>
             <p><strong>Tipo:</strong> 
-              {% if sol['tipo'] == 'instalacao' %}Instalação
-              {% elif sol['tipo'] == 'preventiva' %}Preventiva
-              {% elif sol['tipo'] == 'corretiva' %}Corretiva
-              {% elif sol['tipo'] == 'revisao' %}Revisão
-              {% else %}{{ sol['tipo'] }}{% endif %}
+              {% if sol['tipo'] == 'instalacao' or sol['tipo'] == 'Instalação' %}Instalação
+              {% elif sol['tipo'] == 'preventiva' or sol['tipo'] == 'Preventiva' %}Preventiva
+              {% elif sol['tipo'] == 'corretiva' or sol['tipo'] == 'Corretiva' %}Corretiva
+              {% elif sol['tipo'] == 'montagem' or sol['tipo'] == 'Montagem' %}Montagem
+              {% else %}{{ sol['tipo']|title }}{% endif %}
             </p>
-            <p><strong>Data:</strong> {{ sol['data_registro'][:16] }}</p>
+            <p><strong>Data:</strong> {{ sol['data_solicitacao'] | data_br if sol['data_solicitacao'] else '-' }}</p>
             
             <span class="badge badge-{{ sol['status']|replace(' ', '-')|lower|replace('í','i') }}">
               {{ sol['status'] }}
-            </span>         
-  <div style="margin-top: 15px; display: flex; gap: 15px; align-items: center;">
-  <a href="/editar/{{ sol['id'] }}" style="color: #6b7280; font-size: 1.5em; text-decoration: none;" title="Editar">
-    <i class="bi bi-pencil-square"></i>
-  </a>
-  <a href="/detalhes/{{ sol['id'] }}" style="color: #6b7280; font-size: 1.5em; text-decoration: none;" title="Ver detalhes">
-    <i class="bi bi-eye-fill"></i>
-  </a>
-  <button onclick="confirmarExclusao({{ sol['id'] }})" style="background: none; border: none; color: #6b7280; font-size: 1.5em; cursor: pointer; padding: 0; margin: 0; display: inline-flex; align-items: center;" title="Excluir">
-    <i class="bi bi-trash-fill"></i>
-  </button>
-</div>
+            </span>
+            
+            <div class="acoes-mobile">
+              <a href="/editar/{{ sol['id'] }}" class="icon-link" title="Editar">
+                <i class="bi bi-pencil-square"></i>
+              </a>
+              <a href="/detalhes/{{ sol['id'] }}" class="icon-link" title="Ver detalhes">
+                <i class="bi bi-eye-fill"></i>
+              </a>
+              <button onclick="confirmarExclusao({{ sol['id'] }})" class="icon-button" title="Excluir">
+                <i class="bi bi-trash-fill"></i>
+              </button>
+            </div>
           </div>
           {% endfor %}
         </div>

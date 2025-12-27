@@ -1,104 +1,102 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editar Solicitação #{{ solicitacao['id'] }}</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Editar Solicitação #{{ solicitacao['id'] }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
-<body class="bg-light">
-    <div class="container mt-5">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card shadow">
-                    <div class="card-header bg-warning text-dark text-center">
-                        <h3>✏️ Editar Solicitação #{{ solicitacao['id'] }}</h3>
-                    </div>
-                    <div class="card-body">
-                        {% with messages = get_flashed_messages(with_categories=true) %}
-                            {% if messages %}
-                                {% for category, message in messages %}
-                                    <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show">
-                                        {{ message }}
-                                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                                    </div>
-                                {% endfor %}
-                            {% endif %}
-                        {% endwith %}
+<body>
+  <header>
+    <h1>✏️ Editar Solicitação #{{ solicitacao['id'] }}</h1>
+    <p>Atualize as informações da solicitação</p>
+    <a href="{{ url_for('dashboard') }}" class="btn-dashboard">📊 Dashboard</a>
+    <a href="{{ url_for('logout') }}" class="btn-logout">🚪 Sair</a>
+  </header>
 
-                        <form method="POST">
-                            <div class="mb-3">
-                                <label class="form-label">Cliente *</label>
-                                <input type="text" class="form-control" name="cliente" value="{{ solicitacao['cliente'] }}" required>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label class="form-label">Contato</label>
-                                <input type="text" class="form-control" name="contato" value="{{ solicitacao['contato'] or '' }}">
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label class="form-label">Setor</label>
-                                <input type="text" class="form-control" name="setor" value="{{ solicitacao['setor'] or '' }}">
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label class="form-label">Equipamento *</label>
-                                <input type="text" class="form-control" name="equipamento" value="{{ solicitacao['equipamento'] }}" required>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label class="form-label">Tipo de Manutenção *</label>
-                                <select class="form-select" name="tipo" required>
-                                    <option value="instalacao" {% if solicitacao['tipo'] == 'instalacao' %}selected{% endif %}>Instalação</option>
-                                    <option value="preventiva" {% if solicitacao['tipo'] == 'preventiva' %}selected{% endif %}>Preventiva</option>
-                                    <option value="corretiva" {% if solicitacao['tipo'] == 'corretiva' %}selected{% endif %}>Corretiva</option>
-                                    <option value="revisao" {% if solicitacao['tipo'] == 'revisao' %}selected{% endif %}>Revisão</option>
-                                </select>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label class="form-label">Descrição do Problema *</label>
-                                <textarea class="form-control" name="descricao" rows="4" required>{{ solicitacao['descricao'] }}</textarea>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label class="form-label">Prioridade</label>
-                                <select class="form-select" name="prioridade">
-                                    <option value="" {% if not solicitacao['prioridade'] %}selected{% endif %}>-- Selecione --</option>
-                                    <option value="urgente" {% if solicitacao['prioridade'] == 'urgente' %}selected{% endif %}>Urgente</option>
-                                    <option value="alta" {% if solicitacao['prioridade'] == 'alta' %}selected{% endif %}>Alta</option>
-                                    <option value="media" {% if solicitacao['prioridade'] == 'media' %}selected{% endif %}>Média</option>
-                                    <option value="baixa" {% if solicitacao['prioridade'] == 'baixa' %}selected{% endif %}>Baixa</option>
-                                </select>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label class="form-label">Técnico</label>
-                                <input type="text" class="form-control" name="tecnico" value="{{ solicitacao['tecnico'] or '' }}">
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label class="form-label">Data da Solicitação</label>
-                                <input type="date" class="form-control" name="data" value="{{ solicitacao['data_solicitacao'] or '' }}">
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label class="form-label">Peças Necessárias</label>
-                                <textarea class="form-control" name="pecas" rows="2">{{ solicitacao['pecas'] or '' }}</textarea>
-                            </div>
-                            
-                            <button type="submit" class="btn btn-success w-100 mb-2">💾 Salvar Alterações</button>
-                            <a href="/listar" class="btn btn-secondary w-100">← Voltar à Lista</a>
-                        </form>
-                    </div>
-                </div>
-            </div>
+  <main>
+    <section class="formulario-secao">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div class="mensagens">
+            {% for category, message in messages %}
+              <div class="alert alert-{{ category }}">
+                {{ message }}
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+
+      <a href="{{ url_for('listar') }}" class="btn-voltar">← Voltar à Lista</a>
+
+      <form method="POST">
+        <fieldset>
+          <legend>Informações do Cliente</legend>
+          
+          <label for="cliente">Cliente *</label>
+          <input type="text" id="cliente" name="cliente" value="{{ solicitacao['cliente'] }}" required>
+          
+          <label for="contato">Contato</label>
+          <input type="text" id="contato" name="contato" value="{{ solicitacao['contato'] or '' }}">
+          
+          <label for="setor">Setor</label>
+          <input type="text" id="setor" name="setor" value="{{ solicitacao['setor'] or '' }}">
+        </fieldset>
+
+        <fieldset>
+          <legend>Detalhes da Manutenção</legend>
+          
+          <label for="equipamento">Equipamento *</label>
+          <input type="text" id="equipamento" name="equipamento" value="{{ solicitacao['equipamento'] }}" required>
+          
+          <label for="tipo">Tipo de Manutenção *</label>
+          <select id="tipo" name="tipo" required>
+            <option value="Instalação" {% if solicitacao['tipo'] == 'Instalação' or solicitacao['tipo'] == 'instalacao' %}selected{% endif %}>Instalação</option>
+            <option value="Preventiva" {% if solicitacao['tipo'] == 'Preventiva' or solicitacao['tipo'] == 'preventiva' %}selected{% endif %}>Preventiva</option>
+            <option value="Corretiva" {% if solicitacao['tipo'] == 'Corretiva' or solicitacao['tipo'] == 'corretiva' %}selected{% endif %}>Corretiva</option>
+            <option value="Montagem" {% if solicitacao['tipo'] == 'Montagem' or solicitacao['tipo'] == 'montagem' %}selected{% endif %}>Montagem</option>
+          </select>
+          
+          <label for="descricao">Descrição do Problema *</label>
+          <textarea id="descricao" name="descricao" rows="4" required>{{ solicitacao['descricao'] }}</textarea>
+          
+          <label for="prioridade">Prioridade</label>
+          <select id="prioridade" name="prioridade">
+            <option value="">-- Selecione --</option>
+            <option value="urgente" {% if solicitacao['prioridade'] == 'urgente' %}selected{% endif %}>Urgente</option>
+            <option value="alta" {% if solicitacao['prioridade'] == 'alta' %}selected{% endif %}>Alta</option>
+            <option value="media" {% if solicitacao['prioridade'] == 'media' %}selected{% endif %}>Média</option>
+            <option value="baixa" {% if solicitacao['prioridade'] == 'baixa' %}selected{% endif %}>Baixa</option>
+          </select>
+        </fieldset>
+
+        <fieldset>
+          <legend>Responsável</legend>
+          
+          <label for="tecnico">Técnico</label>
+          <input type="text" id="tecnico" name="tecnico" value="{{ solicitacao['tecnico'] or '' }}">
+          
+          <label for="data">Data da Solicitação</label>
+          <input type="date" id="data" name="data" value="{{ solicitacao['data_solicitacao'] or '' }}">
+        </fieldset>
+
+        <fieldset>
+          <legend>Peças e Material</legend>
+          
+          <label for="pecas">Peças Necessárias</label>
+          <textarea id="pecas" name="pecas" rows="3">{{ solicitacao['pecas'] or '' }}</textarea>
+        </fieldset>
+
+        <div class="botoes">
+          <button type="submit">💾 Salvar Alterações</button>
         </div>
-    </div>
-    
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+      </form>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 - Sistema de Manutenção</p>
+  </footer>
 </body>
 </html>
