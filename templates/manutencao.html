@@ -94,14 +94,14 @@
           <input type="text" id="contato" name="contato">
           
           <label for="setor">Setor/Departamento:</label>
-          <input type="text" id="setor" name="setor">
+          <input type="text" id="setor" name="setor" placeholder="Ex.: Oficina; Agrícola; Paisagismo; Vendas; etc.">
         </fieldset>
 
         <fieldset>
           <legend>Detalhes da Manutenção</legend>
           
           <label for="equipamento">Equipamento: *</label>
-          <input type="text" id="equipamento" name="equipamento" required>
+          <input type="text" id="equipamento" name="equipamento" placeholder="Ex.: Painel 220 V - 1F, 0,5 CV, etc." required>
           
           <label for="tipo">Tipo de Manutenção: *</label>
           <select id="tipo" name="tipo" required>
@@ -109,11 +109,11 @@
             <option value="Preventiva">Preventiva</option>
             <option value="Corretiva">Corretiva</option>
             <option value="Instalação">Instalação</option>
-            <option value="Revisão">Revisão</option>
+            <option value="Montagem">Montagem</option>
           </select>
           
           <label for="descricao">Descrição do Problema: *</label>
-          <textarea id="descricao" name="descricao" rows="4" required></textarea>
+          <textarea id="descricao" name="descricao" rows="4" placeholder="Ex.: Painel não liga;" required></textarea>
           
           <label for="prioridade">Prioridade:</label>
           <select id="prioridade" name="prioridade">
@@ -138,7 +138,7 @@
           <legend>Peças e Material</legend>
           
           <label for="pecas">Peças Substituídas/Utilizadas:</label>
-          <textarea id="pecas" name="pecas" rows="3" placeholder="Ex: Rolamento 6204, Correia A-45..."></textarea>
+          <textarea id="pecas" name="pecas" rows="3" placeholder="Ex.: Capacitor permanente 400V, 25uF"></textarea>
         </fieldset>
 
         <div class="botoes">
