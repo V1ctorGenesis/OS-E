@@ -383,28 +383,48 @@ footer {
     right: 20px;
     background: #d9534f;
     color: white;
-    padding: 8px 15px;
+    padding: 10px 20px;
     text-decoration: none;
     border-radius: 4px;
     font-weight: bold;
-    font-size: 14px;
-    z-index: 10;
-}
-
-/* Mobile - mover para baixo do header */
-@media (max-width: 768px) {
-    .btn-logout {
-        position: static;
-        display: block;
-        width: fit-content;
-        margin: 10px auto;
-    }
-    
-    header {
-        padding-bottom: 60px; /* espaço para o botão */
-    }
 }
 
 .btn-logout:hover {
     background: #c9302c;
+}
+
+/* Login form - centralizado e largo */
+.login-form {
+    max-width: 500px;
+    margin: 50px auto;
+    padding: 30px;
+}
+
+/* Inputs do login ocupam largura total */
+.login-form input[type="password"] {
+    width: 100%;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 14px;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 1em;
+    font-family: inherit;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+/* Botão ocupa largura total */
+.btn-full {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Mobile - formulário mais estreito */
+@media (max-width: 768px) {
+    .login-form {
+        max-width: 80%;
+        margin: 30px auto;
+        padding: 20px;
+    }
 }
