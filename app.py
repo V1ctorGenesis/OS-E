@@ -2,17 +2,27 @@ from flask import Flask, render_template, request, redirect, url_for, flash, ses
 import json
 import os
 import locale
-# No início do app.py, depois dos imports
-try:
-    locale.setlocale(locale.LC_TIME, 'pt_BR.UTF-8')
-except:
-    pass  # Se falhar, continua com formato numérico
-from datetime import datetime
+from datetime import datetime, timedelta
 from collections import Counter
+from werkzeug.security import check_password_hash
+
 
 app = Flask(__name__)
-app.secret_key = 'sua_chave_secreta_aqui_123'
-LOGIN_PASSWORD = 'admin123' # ← MUDE SUA SENHA AQUI
+
+# Segredos via ambiente (Render > Environment)
+app.secret_key = os.environ.get("SECRET_KEY", "dev_inseguro_mude_no_render")
+
+LOGIN_PASSWORD_HASH = os.environ.get("LOGIN_PASSWORD_HASH")
+if not LOGIN_PASSWORD_HASH:
+    raise RuntimeError("LOGIN_PASSWORD_HASH não configurada (env var).")
+
+# Cookies de sessão mais seguros (produção HTTPS)
+app.config.update(
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SAMESITE="Lax",
+    SESSION_COOKIE_SECURE=(os.environ.get("SESSION_COOKIE_SECURE", "1") == "1"),
+    PERMANENT_SESSION_LIFETIME=timedelta(hours=8),
+)
 
 # FORÇA PASTA ESPECÍFICA (HARDCODED)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__)) # ← Pasta do app.py
@@ -77,12 +87,16 @@ carregar_backup()
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        senha = request.form.get('senha')
-        if senha == LOGIN_PASSWORD:
+        senha = request.form.get('senha', '')
+
+        if check_password_hash(LOGIN_PASSWORD_HASH, senha):
+            session.clear()
             session.permanent = False
             session['logado'] = True
             return redirect(url_for('index'))
+
         flash('Senha incorreta!', 'error')
+
     return render_template('login.html')
 
 @app.route('/logout')
@@ -289,6 +303,6 @@ def dashboard():
                          anos_disponiveis=anos_disponiveis,
                          ano_selecionado=ano_filtro)
 
-if __name__ == '__main__':
-    print("🚀 Sistema rodando!")
-    app.run(debug=True, host='0.0.0.0', port=5000)
+if __name__ == "__main__":
+    debug = os.environ.get("FLASK_DEBUG", "0") == "1"
+    app.run(debug=debug, host="0.0.0.0", port=5000)
