@@ -1,6 +1,12 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 import json
 import os
+import locale
+# No início do app.py, depois dos imports
+try:
+    locale.setlocale(locale.LC_TIME, 'pt_BR.UTF-8')
+except:
+    pass  # Se falhar, continua com formato numérico
 from datetime import datetime
 from collections import Counter
 
@@ -213,14 +219,25 @@ def dashboard():
     if not exige_login():
         return redirect(url_for('login'))
     
-    # Estatísticas gerais
-    total = len(solicitacoes_data)
-    pendentes = sum(1 for s in solicitacoes_data if s.get('status') == 'Pendente')
-    em_andamento = sum(1 for s in solicitacoes_data if s.get('status') == 'Em andamento')
-    concluidas = sum(1 for s in solicitacoes_data if s.get('status') == 'Concluída')
+    # Pega o ano selecionado (padrão: ano atual)
+    ano_filtro = request.args.get('ano', str(datetime.now().year))
+    
+    # Estatísticas gerais (considera o filtro de ano se não for "todos")
+    if ano_filtro == 'todos':
+        solicitacoes_filtradas = solicitacoes_data
+    else:
+        solicitacoes_filtradas = [
+            s for s in solicitacoes_data 
+            if s.get('data_solicitacao', '').startswith(ano_filtro)
+        ]
+    
+    total = len(solicitacoes_filtradas)
+    pendentes = sum(1 for s in solicitacoes_filtradas if s.get('status') == 'Pendente')
+    em_andamento = sum(1 for s in solicitacoes_filtradas if s.get('status') == 'Em andamento')
+    concluidas = sum(1 for s in solicitacoes_filtradas if s.get('status') == 'Concluída')
     
     # Dados por tipo de manutenção
-    tipos = [s.get('tipo', 'Não especificado').title() for s in solicitacoes_data]
+    tipos = [s.get('tipo', 'Não especificado').title() for s in solicitacoes_filtradas]
     tipo_counter = Counter(tipos)
     tipo_data = {
         'labels': list(tipo_counter.keys()),
@@ -229,24 +246,38 @@ def dashboard():
     
     # Dados por mês - USANDO DATA DA SOLICITAÇÃO
     meses_dict = {}
-    for s in solicitacoes_data:
+    for s in solicitacoes_filtradas:
         data_solicitacao = s.get('data_solicitacao', '')
         if data_solicitacao:
             try:
                 # Extrai ano e mês da data da solicitação
                 data_obj = datetime.strptime(data_solicitacao[:10], '%Y-%m-%d')
-                mes_ano = data_obj.strftime('%m/%Y')
+                # Formato: "Jan/2025" (mais legível)
+                mes_ano = data_obj.strftime('%b/%Y')
                 meses_dict[mes_ano] = meses_dict.get(mes_ano, 0) + 1
             except:
                 pass
     
     # Ordena os meses cronologicamente
-    meses_ordenados = sorted(meses_dict.items(), key=lambda x: datetime.strptime(x[0], '%m/%Y'))
+    meses_ordenados = sorted(meses_dict.items(), 
+                            key=lambda x: datetime.strptime(x[0], '%b/%Y'))
     
     mes_data = {
         'labels': [item[0] for item in meses_ordenados],
         'values': [item[1] for item in meses_ordenados]
     }
+    
+    # Lista de anos disponíveis nos dados
+    anos_disponiveis = set()
+    for s in solicitacoes_data:
+        data_sol = s.get('data_solicitacao', '')
+        if data_sol:
+            try:
+                ano = datetime.strptime(data_sol[:10], '%Y-%m-%d').year
+                anos_disponiveis.add(ano)
+            except:
+                pass
+    anos_disponiveis = sorted(anos_disponiveis, reverse=True)
     
     return render_template('dashboard.html', 
                          total=total,
@@ -254,10 +285,10 @@ def dashboard():
                          em_andamento=em_andamento,
                          concluidas=concluidas,
                          tipo_data=tipo_data,
-                         mes_data=mes_data)
+                         mes_data=mes_data,
+                         anos_disponiveis=anos_disponiveis,
+                         ano_selecionado=ano_filtro)
 
 if __name__ == '__main__':
     print("🚀 Sistema rodando!")
-    # Em produção, use uma variável de ambiente
-    debug_mode = os.getenv('FLASK_ENV') == 'development'
-    app.run(debug=debug_mode, host='0.0.0.0', port=5000)
+    app.run(debug=True, host='0.0.0.0', port=5000)

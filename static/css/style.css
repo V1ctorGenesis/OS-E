@@ -246,7 +246,7 @@ button[type="reset"]:hover {
 }
 
 .btn-warning:hover {
-  background-color: #3b83f69c;
+  background-color: #3b82f6;
 }
 
 .btn-info {
@@ -255,7 +255,7 @@ button[type="reset"]:hover {
 }
 
 .btn-info:hover {
-  background-color: #3b83f69c;
+  background-color: #3b82f6;
 }
 
 .btn-danger {
@@ -264,7 +264,7 @@ button[type="reset"]:hover {
 }
 
 .btn-danger:hover {
-   background-color: #3b83f69c;
+  background-color: #3b82f6;
 }
 
 /* ==========================================
@@ -619,6 +619,42 @@ footer {
    DASHBOARD - GRÁFICOS E ESTATÍSTICAS
    ========================================== */
 
+/* Filtro de período do dashboard */
+.filtro-periodo {
+  margin-bottom: 25px;
+  padding: 20px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.filtro-periodo label {
+  font-weight: 600;
+  color: #374151;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.filtro-periodo select {
+  padding: 12px 15px;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 16px;
+  min-width: 200px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex: 0;
+}
+
+.filtro-periodo select:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
 /* Grid de estatísticas */
 .stats-grid {
   display: grid;
@@ -633,7 +669,7 @@ footer {
   border-radius: 10px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.08);
   text-align: center;
-  border-left: 5px solid #3b82f6;
+  border-left: 5px solid #667eea;
   transition: all 0.3s ease;
 }
 
@@ -654,7 +690,7 @@ footer {
 .stat-card .number {
   font-size: 42px;
   font-weight: bold;
-  color: #3b82f6;
+  color: #667eea;
 }
 
 /* Cores específicas por status */
@@ -667,25 +703,25 @@ footer {
 }
 
 .stat-andamento {
-  border-left-color: #3b82f6;
+  border-left-color: #17a2b8;
 }
 
 .stat-andamento .number {
-  color: #3b82f6;
+  color: #17a2b8;
 }
 
 .stat-concluida {
-  border-left-color: #10b981;
+  border-left-color: #28a745;
 }
 
 .stat-concluida .number {
-  color: #10b981;
+  color: #28a745;
 }
 
 /* Grid de gráficos */
 .charts-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
   gap: 25px;
   margin-top: 20px;
 }
@@ -695,44 +731,223 @@ footer {
   padding: 25px;
   border-radius: 10px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  overflow: hidden; /* Importante: evita overflow */
 }
 
 .chart-container h2 {
-  color: #1e3a8a;
+  color: #333;
   margin-bottom: 25px;
   font-size: 1.3em;
   text-align: center;
   font-weight: 600;
-  border-bottom: 2px solid #3b82f6;
-  padding-bottom: 15px;
 }
 
 .chart-wrapper {
   position: relative;
   height: 350px;
+  width: 100%;
 }
 
-/* Responsividade do dashboard */
-@media (max-width: 768px) {
+/* ==========================================
+   RESPONSIVIDADE DASHBOARD - TABLET
+   ========================================== */
+@media (max-width: 992px) {
   .charts-grid {
     grid-template-columns: 1fr;
   }
-
-  .chart-wrapper {
-    height: 300px;
-  }
-
-  .stat-card .number {
-    font-size: 32px;
-  }
-
+  
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
+/* ==========================================
+   RESPONSIVIDADE DASHBOARD - MOBILE
+   ========================================== */
+@media (max-width: 768px) {
+  /* Ajusta padding do main para evitar overflow */
+  body {
+    overflow-x: hidden;
+  }
+  
+  main {
+    padding: 0 10px;
+  }
+  
+  .formulario-secao {
+    padding: 15px;
+  }
+  
+  /* Filtro de período */
+  .filtro-periodo {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 15px;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .filtro-periodo label {
+    white-space: normal;
+    text-align: left;
+    font-size: 14px;
+  }
+  
+  .filtro-periodo select {
+    width: 100%;
+    min-width: auto;
+    font-size: 16px;
+  }
+  
+  /* Stats em 2 colunas no mobile */
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  
+  .stat-card {
+    padding: 15px 10px;
+  }
+  
+  .stat-card h3 {
+    font-size: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .stat-card .number {
+    font-size: 28px;
+  }
+  
+  /* Gráficos */
+  .charts-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+    /* Remove minmax para evitar overflow */
+  }
+  
+  .chart-container {
+    padding: 15px 10px;
+    margin: 0;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .chart-container h2 {
+    font-size: 1em;
+    margin-bottom: 15px;
+  }
+  
+  .chart-wrapper {
+    height: 250px;
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  /* Ajusta header no mobile */
+  header {
+    padding: 20px 10px 70px 10px;
+  }
+  
+  header h1 {
+    font-size: 1.3em;
+  }
+  
+  header p {
+    font-size: 0.85em;
+  }
+}
+
+/* ==========================================
+   RESPONSIVIDADE DASHBOARD - MOBILE PEQUENO
+   ========================================== */
 @media (max-width: 480px) {
+  main {
+    padding: 0 5px;
+    margin: 10px auto;
+  }
+  
+  .formulario-secao {
+    padding: 12px 8px;
+  }
+  
+  /* Stats em 1 coluna em telas muito pequenas */
   .stats-grid {
     grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  
+  .stat-card {
+    padding: 15px;
+  }
+  
+  .stat-card h3 {
+    font-size: 11px;
+  }
+  
+  .stat-card .number {
+    font-size: 32px;
+  }
+  
+  /* Gráficos ainda menores */
+  .chart-wrapper {
+    height: 220px;
+  }
+  
+  .chart-container {
+    padding: 12px 8px;
+  }
+  
+  .filtro-periodo {
+    padding: 12px;
+  }
+  
+  header {
+    padding: 15px 5px 65px 5px;
+  }
+}
+
+/* ==========================================
+   AJUSTE DOS BOTÕES DO HEADER (DASHBOARD)
+   ========================================== */
+.btn-dashboard-extra {
+  position: absolute;
+  top: 20px;
+  background-color: #3b82f6;
+  color: white;
+  padding: 10px 20px;
+  text-decoration: none;
+  border-radius: 5px;
+  font-weight: 600;
+  font-size: 14px;
+  z-index: 10;
+  transition: all 0.3s ease;
+}
+
+.btn-dashboard-extra:hover {
+  background-color: #2563eb;
+  color: white;
+}
+
+.btn-nova {
+  right: 280px;
+}
+
+.btn-listar-dash {
+  right: 150px;
+}
+
+ @media (max-width: 768px) {
+  .btn-dashboard-extra {
+    position: static;
+    display: inline-block;
+    margin: 5px 3px;
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+  .btn-logout {
+    padding: 8px 18px;
+    font-size: 12px;
+    background-color: #d9534f; /* Vermelho - já é padrão */
   }
 }

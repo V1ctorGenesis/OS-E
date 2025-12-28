@@ -2,25 +2,37 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
   <title>Dashboard - Controle de Manutenção</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
   <header>
-    <h1>📊 Dashboard de Manutenções</h1>
-    <p>Visualize estatísticas e gráficos</p>
-    <a href="{{ url_for('index') }}" class="btn-dashboard" style="right: 280px;">➕ Nova</a>
-    <a href="{{ url_for('listar') }}" class="btn-dashboard" style="right: 150px;">📋 Listar</a>
+    <h1>📊 Dashboard</h1>
+    <p>Estatísticas e gráficos</p>
+    <a href="{{ url_for('index') }}" class="btn-dashboard-extra btn-nova">➕ Nova</a>
+    <a href="{{ url_for('listar') }}" class="btn-dashboard-extra btn-listar-dash">📋 Listar</a>
     <a href="{{ url_for('logout') }}" class="btn-logout">🚪 Sair</a>
   </header>
 
   <main>
     <section class="formulario-secao">
+      
+      <!-- FILTRO DE PERÍODO -->
+      <div class="filtro-periodo">
+        <label for="ano-filtro">📅 Filtrar por ano:</label>
+        <select id="ano-filtro" onchange="filtrarAno()">
+          <option value="todos" {% if ano_selecionado == 'todos' %}selected{% endif %}>Todos os anos</option>
+          {% for ano in anos_disponiveis %}
+            <option value="{{ ano }}" {% if ano_selecionado == ano|string %}selected{% endif %}>{{ ano }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
       <div class="stats-grid">
         <div class="stat-card">
-          <h3>Total de Solicitações</h3>
+          <h3>Total</h3>
           <div class="number">{{ total }}</div>
         </div>
         <div class="stat-card stat-pendente">
@@ -39,14 +51,14 @@
 
       <div class="charts-grid">
         <div class="chart-container">
-          <h2>Manutenções por Tipo</h2>
+          <h2>Por Tipo</h2>
           <div class="chart-wrapper">
             <canvas id="tipoChart"></canvas>
           </div>
         </div>
 
         <div class="chart-container">
-          <h2>Manutenções por Mês</h2>
+          <h2>Por Mês</h2>
           <div class="chart-wrapper">
             <canvas id="mesChart"></canvas>
           </div>
@@ -60,6 +72,12 @@
   </footer>
 
   <script>
+    // Função para filtrar por ano
+    function filtrarAno() {
+      const ano = document.getElementById('ano-filtro').value;
+      window.location.href = `{{ url_for('dashboard') }}?ano=${ano}`;
+    }
+
     // Dados do backend
     const tipoData = {{ tipo_data | tojson }};
     const mesData = {{ mes_data | tojson }};
@@ -74,12 +92,12 @@
           label: 'Quantidade',
           data: tipoData.values,
           backgroundColor: [
-            '#3b82f6', // Azul padrão
-            '#1e3a8a', // Azul escuro
-            '#60a5fa', // Azul claro
-            '#2563eb', // Azul médio
-            '#1d4ed8', // Azul forte
-            '#93c5fd', // Azul suave
+            '#667eea',
+            '#764ba2',
+            '#f093fb',
+            '#4facfe',
+            '#43e97b',
+            '#fa709a',
           ],
           borderWidth: 2,
           borderColor: '#fff'
@@ -122,8 +140,8 @@
         datasets: [{
           label: 'Quantidade de Manutenções',
           data: mesData.values,
-          backgroundColor: '#3b82f6',
-          borderColor: '#1e3a8a',
+          backgroundColor: '#667eea',
+          borderColor: '#5568d3',
           borderWidth: 2,
           borderRadius: 5
         }]
@@ -141,14 +159,16 @@
               }
             },
             grid: {
-              color: '#e5e7eb'
+              color: '#e0e0e0'
             }
           },
           x: {
             ticks: {
               font: {
-                size: 12
-              }
+                size: 11
+              },
+              maxRotation: 45,
+              minRotation: 45
             },
             grid: {
               display: false
@@ -160,7 +180,7 @@
             display: false
           },
           tooltip: {
-            backgroundColor: '#1e3a8a',
+            backgroundColor: '#333',
             padding: 12,
             titleFont: {
               size: 14
