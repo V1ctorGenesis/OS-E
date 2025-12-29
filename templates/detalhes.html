@@ -55,6 +55,7 @@
       <fieldset>
         <legend>Alterar Status</legend>
         <form method="post" action="{{ url_for('alterar_status', id=solicitacao['id']) }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
           <label for="status">Novo Status:</label>
           <select id="status" name="status">
             <option value="Pendente" {% if solicitacao['status'] == 'Pendente' %}selected{% endif %}>Pendente</option>

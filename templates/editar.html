@@ -31,6 +31,7 @@
       <a href="{{ url_for('listar') }}" class="btn-voltar">← Voltar à Lista</a>
 
       <form method="POST">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <fieldset>
           <legend>Informações do Cliente</legend>
           

@@ -39,7 +39,7 @@
       <h2>Nova Solicitação de Manutenção</h2>
       
       <form id="formManutencao" action="/enviar" method="post">
-        
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <fieldset>
           <legend>Informações do Cliente</legend>
           

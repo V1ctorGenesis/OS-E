@@ -23,6 +23,7 @@
       {% endwith %}
 
       <form method="post">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <label for="senha">Senha de Acesso *</label>
         <input type="password" id="senha" name="senha" required autofocus placeholder="Digite a senha">
 

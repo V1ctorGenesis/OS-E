@@ -5,7 +5,7 @@ import locale
 from datetime import datetime, timedelta
 from collections import Counter
 from werkzeug.security import check_password_hash
-
+from flask_wtf.csrf import CSRFProtect, CSRFError
 
 app = Flask(__name__)
 
@@ -16,13 +16,26 @@ LOGIN_PASSWORD_HASH = os.environ.get("LOGIN_PASSWORD_HASH")
 if not LOGIN_PASSWORD_HASH:
     raise RuntimeError("LOGIN_PASSWORD_HASH não configurada (env var).")
 
-# Cookies de sessão mais seguros (produção HTTPS)
+# Detecta ambiente dev/local (HTTP) vs produção (HTTPS)
+# Em produção (Render), defina SESSION_COOKIE_SECURE=1
+# Em dev/local, deixe vazio ou 0.
+session_cookie_secure = (os.environ.get("SESSION_COOKIE_SECURE", "0") == "1")
+
+# Cookies de sessão
 app.config.update(
     SESSION_COOKIE_HTTPONLY=True,
     SESSION_COOKIE_SAMESITE="Lax",
-    SESSION_COOKIE_SECURE=(os.environ.get("SESSION_COOKIE_SECURE", "1") == "1"),
+    SESSION_COOKIE_SECURE=session_cookie_secure,
     PERMANENT_SESSION_LIFETIME=timedelta(hours=8),
 )
+
+# Inicialize CSRF só depois de secret_key/config
+csrf = CSRFProtect(app)
+
+# (Opcional, mas ajuda muito) Mostrar motivo do 400 de CSRF
+@app.errorhandler(CSRFError)
+def handle_csrf_error(e):
+    return f"CSRF error: {e.description}", 400
 
 # FORÇA PASTA ESPECÍFICA (HARDCODED)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__)) # ← Pasta do app.py
